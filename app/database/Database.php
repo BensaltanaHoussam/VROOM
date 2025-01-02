@@ -2,7 +2,7 @@
 class Database
 {
     private $host = "localhost:3307";
-    private $db_name = "Vroom";
+    private $db_name = "vroom";
     private $username = "root";
     private $password = "";
     private $conn;
@@ -24,7 +24,7 @@ class Database
             $this->error = $e->getMessage();
             echo $this->error;
         }
-        
+
         return $this->conn;
     }
 
@@ -34,5 +34,3 @@ class Database
 
     }
 }
-
-$database = new Database();
