@@ -54,6 +54,18 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    public static function getByEmail($email)
+    {
+        $database = new Database();
+        $db = $database->connect();
+        $sql = "SELECT * FROM users WHERE email = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$email]);
+        $database->disconnect();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     
 }
 

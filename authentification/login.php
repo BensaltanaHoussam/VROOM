@@ -1,3 +1,33 @@
+<?php
+require_once '../app/class/user.php';
+
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $user = User::getByEmail($email); 
+  
+    if ($user && password_verify($password, $user['mot_de_passe'])) {
+        if ($user['id_role_fk'] == 1) {
+            header('Location: ../Dashboard/index.php ');
+
+        }else if ($user['id_role_fk'] == 2) {
+            header('location: ../public/index.php');
+        }
+        
+
+    }else {
+        $error = 'Email ou mot de passe incorrect';
+    }
+
+
+
+ 
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -35,7 +65,7 @@
                     <h1 class="text-2xl font-bold text-white ">
                         Login
                     </h1>
-                    <form class="space-y-4 md:space-y-6" methode="GET" action="userlogin.php">
+                    <form action="login.php" method="post" class="space-y-4 md:space-y-6">
                         <div>
                             <label for="email" class="block mb-2 text-sm text-white">Your email</label>
                             <input type="email" name="email" id="email"
@@ -64,7 +94,7 @@
                         <button 
                             class="w-full text-black rounded-2xl bg-white text-center py-2 hover:bg-black border-2 hover:text-white hover:border-2 border-white transform duration-300"> Login</button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                            Don’t have an account yet? <a href="../public/home.php"
+                            Don’t have an account yet? <a href="signup.php"
                                 class="font-medium text-white hover:underline dark:text-primary-500">Sign up</a>
                         </p>
                     </form>
