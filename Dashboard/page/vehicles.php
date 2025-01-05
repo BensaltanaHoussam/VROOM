@@ -89,6 +89,12 @@ if ($categoryId) {
                                     <a href="./historique.php"
                                         class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">Reserve
                                         now <i class="ri-speed-up-fill"></i></a>
+                                    <button onclick="openEditVehicleModal('<?php echo $vehicle['id_vehicule']; ?>', '<?php echo $vehicle['nom_vehicule']; ?>', '<?php echo $vehicle['description']; ?>', '<?php echo $vehicle['fuel_economy']; ?>', '<?php echo $vehicle['price']; ?>', '<?php echo $vehicle['features']; ?>', '<?php echo $vehicle['vehicule_image']; ?>', '<?php echo $vehicle['id_categorie_fk']; ?>')" class="text-blue-500">Edit</button>
+                                    <form action="../../app/action/admin/vehicule/delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+                                        <input type="hidden" name="id" value="<?php echo $vehicle['id_vehicule']; ?>">
+                                        <input type="hidden" name="category_id" value="<?php echo $categoryId; ?>">
+                                        <button type="submit" class="text-red-500">Delete</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -184,6 +190,69 @@ if ($categoryId) {
         </div>
     </div>
 
+    <!-- Edit Vehicle Modal -->
+    <div id="editVehicleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl max-w-2xl w-full mx-4 shadow-2xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-black">Edit Vehicle</h3>
+                    <button onclick="closeEditVehicleModal()" class="text-gray-400 hover:text-white transition-colors" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="editVehicleForm" action="../../app/action/admin/vehicule/edit.php" method="POST" class="space-y-4">
+                    <input type="hidden" id="editVehicleId" name="id">
+                    <input type="hidden" name="category_id" value="<?php echo $categoryId; ?>">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="editVehicleName" class="block text-sm font-medium text-gray-700 mb-2">Vehicle Name</label>
+                            <input type="text" id="editVehicleName" name="nom_vehicule" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                        </div>
+
+                        <div>
+                            <label for="editPrice" class="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                            <input type="text" id="editPrice" name="price" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                        </div>
+
+                        <div>
+                            <label for="editVehicleDesc" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="editVehicleDesc" name="description" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700" rows="3"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="editFuelEconomy" class="block text-sm font-medium text-gray-700 mb-2">Fuel Economy</label>
+                            <input type="text" id="editFuelEconomy" name="fuel_economy" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                        </div>
+
+                        <div>
+                            <label for="editFeatures" class="block text-sm font-medium text-gray-700 mb-2">Features</label>
+                            <input type="text" id="editFeatures" name="features" class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                        </div>
+
+                        <div>
+                            <label for="editVehicleImage" class="block text-sm font-medium text-gray-700 mb-2">Vehicle Image URL</label>
+                            <input type="url" id="editVehicleImage" name="vehicule_image" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="closeEditVehicleModal()" class="px-4 py-2 bg-white text-black border-black border-2 rounded-lg hover:bg-black hover:text-white transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitEditVehicleBtn" class="px-4 py-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black transition-colors">
+                            <span>Save</span>
+                            <div id="loadingEditVehicleSpinner" class="hidden ml-2">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openAddVehicleModal() {
             document.getElementById('addVehicleModal').classList.remove('hidden');
@@ -194,6 +263,24 @@ if ($categoryId) {
             const modal = document.getElementById('addVehicleModal');
             modal.classList.add('hidden');
             document.getElementById('addVehicleForm').reset();
+        }
+
+        function openEditVehicleModal(id, name, description, fuelEconomy, price, features, imageUrl, categoryId) {
+            document.getElementById('editVehicleId').value = id;
+            document.getElementById('editVehicleName').value = name;
+            document.getElementById('editVehicleDesc').value = description;
+            document.getElementById('editFuelEconomy').value = fuelEconomy;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editFeatures').value = features;
+            document.getElementById('editVehicleImage').value = imageUrl;
+            document.getElementById('editVehicleModal').classList.remove('hidden');
+            document.getElementById('editVehicleModal').classList.add('flex');
+        }
+
+        function closeEditVehicleModal() {
+            const modal = document.getElementById('editVehicleModal');
+            modal.classList.add('hidden');
+            document.getElementById('editVehicleForm').reset();
         }
     </script>
 </body>

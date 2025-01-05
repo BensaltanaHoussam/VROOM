@@ -41,5 +41,36 @@ class Vehicule {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function editVehicule($id, $name, $description, $fuelEconomy, $price, $features, $vehicleImage, $categoryId) {
+        $query = "UPDATE vehicules SET nom_vehicule = :name, description = :description, fuel_economy = :fuelEconomy, price = :price, features = :features, vehicule_image = :vehicleImage, id_categorie_fk = :categoryId WHERE id_vehicule = :id";
+        $stmt = $this->conn->prepare($query);
+
+        // Bind parameters to protect against SQL injection
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':fuelEconomy', $fuelEconomy);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':features', $features);
+        $stmt->bindParam(':vehicleImage', $vehicleImage);
+        $stmt->bindParam(':categoryId', $categoryId);
+
+        if ($stmt->execute()) {
+            return true; // Success
+        }
+        return false; // Failure
+    }
+
+    public function deleteVehicule($id) {
+        $query = "DELETE FROM vehicules WHERE id_vehicule = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+
+        if ($stmt->execute()) {
+            return true; // Success
+        }
+        return false; // Failure
+    }
 }
 ?>
