@@ -59,7 +59,7 @@ if ($categoryId) {
         <div class="bg-center gap-12 bg-cover h-[100vh] lg:pt-0 mt-24">
             <div class="mx-auto max-w-screen-sm text-center">
                 <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Vehicles in
-                    Category</h2>
+                    Category  </h2>
                 <p class="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-200">Explore the vehicles in this
                     category!   </p>
             </div>
