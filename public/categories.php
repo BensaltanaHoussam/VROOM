@@ -116,7 +116,7 @@ $categories = $category->getAllCategories();
                         <div class="p-8">
                             <h3 class="text-2xl font-semibold"><?php echo $category['nom']; ?></h3>
                             <p class="mt-2 font-light"><?php echo $category['description']; ?></p>                 
-                            <a href=" vehicles.php?category_id=<?php echo $category['id_categorie']; ?>" class="text-green-500">Show Vehicles</a>
+                            <a href=" vihicules.php?category_id=<?php echo $category['id_categorie']; ?>" class="text-green-500">Show Vehicles</a>
                         </div>
                     </div>
                 </div>
