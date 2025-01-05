@@ -61,7 +61,7 @@ if ($categoryId) {
                 <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Vehicles in
                     Category</h2>
                 <p class="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-200">Explore the vehicles in this
-                    category!</p>
+                    category!   </p>
             </div>
         </div>
     </section>
