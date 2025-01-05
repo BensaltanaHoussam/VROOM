@@ -1,3 +1,18 @@
+<?php
+require_once __DIR__ . '/../app/database/Database.php';
+require_once __DIR__ . '/../app/class/vehicule.php';
+
+// Initialize database connection
+$database = new Database();
+$db = $database->connect();
+
+// Initialize Vehicule class
+$vehicule = new Vehicule($db);
+
+// Fetch all vehicles
+$vehicles = $vehicule->getAllVehicles();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -27,7 +42,7 @@
                     href="./home.php">Home</a>
                 <a href="./historique.php">Reservations</a>
                 <a href="./categories.php">Categories</a>
-                <a href="./categories.php">Services</a>
+                <a href="./services.php">Services</a>
             </div>
             <div>
                 <a href="#"
@@ -107,169 +122,26 @@
 
     <section>
         <div class="flex flex-wrap gap-12 px-4 justify-center py-12">
-            <!-- Image 1 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/dac.jpg');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class=" p-8">
-                        <h3 class="text-2xl font-semibold">Dacia Car Model</h3>
-                        <p class="mt-2 font-light">The Dacia is known for its affordability, reliability, and
-                            efficiency. Perfect
-                            for those looking for a budget-friendly car without compromising on essential features.</p>
-                        <ul class="pb-4 text-sm">
-                            <li><strong>Engine:</strong> 1.0L 3-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 55 MPG</li>
-                            <li><strong>Price:</strong> Starting at $15,000</li>
-                            <li><strong>Features:</strong> Air Conditioning, Bluetooth, Touchscreen, and more!</li>
-                        </ul>
-                        <a href="./historique.php"
-                            class="rounded-md self-end  text-black bg-white px-8 py-1 text-xs font-semibold  shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">Reserve
-                            now <i class="ri-speed-up-fill"></i></a>
-
+            <?php foreach ($vehicles as $vehicle): ?>
+                <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
+                    style="background-image: url('<?php echo $vehicle['vehicule_image']; ?>');">
+                    <div class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold"><?php echo $vehicle['nom_vehicule']; ?></h3>
+                            <p class="mt-2 font-light"><?php echo $vehicle['description']; ?></p>
+                            <ul class="pb-4 text-sm">
+                                <li><strong>Fuel Economy:</strong> <?php echo $vehicle['fuel_economy']; ?></li>
+                                <li><strong>Price:</strong> <?php echo $vehicle['price']; ?></li>
+                                <li><strong>Features:</strong> <?php echo $vehicle['features']; ?></li>
+                            </ul>
+                            <a href="./historique.php"
+                                class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">Reserve
+                                now <i class="ri-speed-up-fill"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-
-            <!-- Image 2 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/nis.jpg');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="p-8">
-                        <h3 class="text-2xl font-semibold">Nissan Car Model</h3>
-                        <p class="mt-2 font-light">The Nissan car combines sleek design with advanced technology,
-                            offering a smooth ride with modern features. A great choice for those seeking both luxury
-                            and practicality.</p>
-                        <ul class="text-sm pb-4">
-                            <li><strong>Engine:</strong> 1.6L 4-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 45 MPG</li>
-                            <li><strong>Price:</strong> Starting at $22,000</li>
-                            <li><strong>Features:</strong> Advanced Safety Features, Apple CarPlay, Heated Seats, and
-                                more!</li>
-                        </ul>
-                        <a href="#"
-                            class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">
-                            Reserve now <i class="ri-speed-up-fill"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Image 3 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/porch.jpg');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="p-8">
-                        <h3 class="text-2xl font-semibold">Nissan Car Model</h3>
-                        <p class="mt-2 font-light">The Nissan car combines sleek design with advanced technology,
-                            offering a smooth ride with modern features. A great choice for those seeking both luxury
-                            and practicality.</p>
-                        <ul class="text-sm pb-4">
-                            <li><strong>Engine:</strong> 1.6L 4-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 45 MPG</li>
-                            <li><strong>Price:</strong> Starting at $22,000</li>
-                            <li><strong>Features:</strong> Advanced Safety Features, Apple CarPlay, Heated Seats, and
-                                more!</li>
-                        </ul>
-                        <a href="#"
-                            class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">
-                            Reserve now <i class="ri-speed-up-fill"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image 4 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/rau.webp');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="p-8">
-                        <h3 class="text-2xl font-semibold">Nissan Car Model</h3>
-                        <p class="mt-2 font-light">The Nissan car combines sleek design with advanced technology,
-                            offering a smooth ride with modern features. A great choice for those seeking both luxury
-                            and practicality.</p>
-                        <ul class="text-sm pb-4">
-                            <li><strong>Engine:</strong> 1.6L 4-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 45 MPG</li>
-                            <li><strong>Price:</strong> Starting at $22,000</li>
-                            <li><strong>Features:</strong> Advanced Safety Features, Apple CarPlay, Heated Seats, and
-                                more!</li>
-                        </ul>
-                        <a href="#"
-                            class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">
-                            Reserve now <i class="ri-speed-up-fill"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image 5 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/mer.jpg');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="p-8">
-                        <h3 class="text-2xl font-semibold">Nissan Car Model</h3>
-                        <p class="mt-2 font-light">The Nissan car combines sleek design with advanced technology,
-                            offering a smooth ride with modern features. A great choice for those seeking both luxury
-                            and practicality.</p>
-                        <ul class="text-sm pb-4">
-                            <li><strong>Engine:</strong> 1.6L 4-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 45 MPG</li>
-                            <li><strong>Price:</strong> Starting at $22,000</li>
-                            <li><strong>Features:</strong> Advanced Safety Features, Apple CarPlay, Heated Seats, and
-                                more!</li>
-                        </ul>
-                        <a href="#"
-                            class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">
-                            Reserve now <i class="ri-speed-up-fill"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image 6 -->
-            <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                style="background-image: url('./img/volz.jpg');">
-                <div
-                    class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="p-8">
-                        <h3 class="text-2xl font-semibold">Nissan Car Model</h3>
-                        <p class="mt-2 font-light">The Nissan car combines sleek design with advanced technology,
-                            offering a smooth ride with modern features. A great choice for those seeking both luxury
-                            and practicality.</p>
-                        <ul class="text-sm pb-4">
-                            <li><strong>Engine:</strong> 1.6L 4-cylinder engine</li>
-                            <li><strong>Fuel Economy:</strong> 45 MPG</li>
-                            <li><strong>Price:</strong> Starting at $22,000</li>
-                            <li><strong>Features:</strong> Advanced Safety Features, Apple CarPlay, Heated Seats, and
-                                more!</li>
-                        </ul>
-                        <a href="#"
-                            class="rounded-md self-end text-black bg-white px-8 py-1 text-xs font-semibold shadow-sm hover:text-white hover:bg-black border-2 border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">
-                            Reserve now <i class="ri-speed-up-fill"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
+</html>
