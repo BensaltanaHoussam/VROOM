@@ -52,7 +52,7 @@ if ($categoryId) {
             <div>
                 <a href="#"
                     class="text-white text-lg bg-black border-2 rounded-3xl py-1 px-4 hover:text-black hover:bg-white hover:border-black transform duration-300">Contact
-                    Us</a>
+                    Us </a>
             </div>
         </div>
 
