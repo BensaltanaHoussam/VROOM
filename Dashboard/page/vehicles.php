@@ -70,7 +70,7 @@ if ($categoryId) {
         <div class="w-[80%] mx-auto py-12">
             <button onclick="openAddVehicleModal()"
                 class="rounded-md text-white bg-black px-8 py-2.5 mb-4 text-sm font-semibold shadow-sm hover:text-black hover:bg-white border-2 border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transform duration-300">Add
-                a new vehicle <i class="ri-speed-up-fill"></i></button>
+                a new vehicle   <i class="ri-speed-up-fill"></i></button>
             <?php if (!empty($vehicles)): ?>
                 <div class="flex flex-wrap gap-12 px-4 justify-center">
                     <?php foreach ($vehicles as $vehicle): ?>
