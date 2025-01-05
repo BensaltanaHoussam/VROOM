@@ -1,26 +1,22 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once __DIR__ . '/../../../database/Database.php';
 require_once __DIR__ . '/../../../class/categorie.php';
 
-// Initialize database connection
-$database = new Database();
-$db = $database->connect();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = isset($_POST['id']) ? $_POST['id'] : null;
 
-// Initialize Category class
-$category = new Category($db);
-
-// Get the id_category from the request
-$id_category = isset($_POST['id_category']) ? $_POST['id_category'] : null;
-
-if ($id_category) {
-    if ($category->deleteCategory($id_category)) {
-      
-        header("Location: /path/to/redirect"); // Add the correct path to redirect
-       
+    if ($id) {
+        if (Category::delete($id)) {
+            header('Location: ../../../Dashboard/page/categories.php');
+            exit();
+        } else {
+            echo "Error deleting category.";
+        }
     } else {
-        echo "Failed to delete category.";
+        echo "Category ID is missing.";
     }
-} else {
-    echo "Category ID is missing.";
 }
 ?>

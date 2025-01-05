@@ -121,9 +121,11 @@ $categories = $category->getAllCategories();
                             <h3 class="text-2xl font-semibold"><?php echo $category['nom']; ?></h3>
                             <p class="mt-2 font-light"><?php echo $category['description']; ?></p>
                             <form action="../../app/action/admin/categorie/delete.php" method="POST">
-                                <input type="hidden" name="id_category" value="<?php echo $category['id_category']; ?>">
-                                <button type="submit">Delete</button>
+                                <input type="hidden" name="id" value="<?php echo $category['id_categorie']; ?>">
+                                <button type="submit" name="delete_category" class="text-red-500">Delete</button>
                             </form>
+                            <button onclick="openEditModal('<?php echo $category['id_categorie']; ?>', '<?php echo $category['nom']; ?>', '<?php echo $category['description']; ?>', '<?php echo $category['categorie_img']; ?>')" class="text-blue-500">Edit</button>
+                            <a href="vehicles.php?category_id=<?php echo $category['id_categorie']; ?>" class="text-green-500">Show Vehicles</a>
                         </div>
                     </div>
                 </div>
@@ -196,6 +198,49 @@ $categories = $category->getAllCategories();
         </div>
     </div>
 
+    <!-- Edit Category Modal -->
+    <div id="editCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl max-w-md w-full mx-4 shadow-2xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-black">Edit Category</h3>
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-white transition-colors" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="editCategoryForm" action="../../app/action/admin/categorie/edit.php" method="POST" class="space-y-4">
+                    <input type="hidden" id="editCategoryId" name="id">
+                    <div>
+                        <label for="editCategoryName" class="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                        <input type="text" id="editCategoryName" name="name" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                    </div>
+
+                    <div>
+                        <label for="editCategoryDesc" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="editCategoryDesc" name="description" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700" rows="3"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="editCategoryImg" class="block text-sm font-medium text-gray-700 mb-2">Category Image URL</label>
+                        <input type="url" id="editCategoryImg" name="categorie_img" required class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-600 transition-all border border-gray-700">
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-white text-black border-black border-2 rounded-lg hover:bg-black hover:text-white transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitEditBtn" class="px-4 py-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black transition-colors">
+                            <span>Edit</span>
+                            <div id="loadingEditSpinner" class="hidden ml-2">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
 
@@ -211,6 +256,52 @@ $categories = $category->getAllCategories();
             document.getElementById('imagePreview').classList.add('hidden');
         }
 
+        function openEditModal(id, name, description, img) {
+            document.getElementById('editCategoryId').value = id;
+            document.getElementById('editCategoryName').value = name;
+            document.getElementById('editCategoryDesc').value = description;
+            document.getElementById('editCategoryImg').value = img;
+            document.getElementById('editCategoryModal').classList.remove('hidden');
+            document.getElementById('editCategoryModal').classList.add('flex');
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editCategoryModal');
+            modal.classList.add('hidden');
+            document.getElementById('editCategoryForm').reset();
+        }
+
+        function showVehicles(categoryId) {
+            fetch('../../app/action/admin/categorie/getVehicles.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ category_id: categoryId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const vehiclesList = document.getElementById('vehiclesList');
+                vehiclesList.innerHTML = '';
+                data.forEach(vehicle => {
+                    const vehicleItem = document.createElement('div');
+                    vehicleItem.classList.add('p-4', 'bg-gray-800', 'text-white', 'rounded-lg');
+                    vehicleItem.innerHTML = `
+                        <h4 class="text-lg font-bold">${vehicle.name}</h4>
+                        <p>${vehicle.description}</p>
+                    `;
+                    vehiclesList.appendChild(vehicleItem);
+                });
+                document.getElementById('vehiclesModal').classList.remove('hidden');
+                document.getElementById('vehiclesModal').classList.add('flex');
+            });
+        }
+
+        function closeVehiclesModal() {
+            const modal = document.getElementById('vehiclesModal');
+            modal.classList.add('hidden');
+            document.getElementById('vehiclesList').innerHTML = '';
+        }
 
     </script>
 
@@ -234,3 +325,5 @@ $categories = $category->getAllCategories();
 
 
 </body>
+
+</html>
