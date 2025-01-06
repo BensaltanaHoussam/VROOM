@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../Dashboard/index.php ');
 
         }else if ($user['id_role_fk'] == 2) {
-            header('location: ../public/index.php');
+            header('location: ../public/home.php');
         }
         
 

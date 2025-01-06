@@ -3,6 +3,7 @@ require_once __DIR__ . '/../database/Database.php'; // Adjust the path as necess
 
 class Vehicule {
     private $conn; 
+    private $table = 'vehicules';
 
     public function __construct($db) {
         $this->conn = $db;
@@ -71,6 +72,14 @@ class Vehicule {
             return true; // Success
         }
         return false; // Failure
+    }
+
+    public function getVehicleById($id) {
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE id_vehicule = :id';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
 ?>

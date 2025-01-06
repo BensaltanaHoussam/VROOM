@@ -1,18 +1,23 @@
 <?php
-require_once __DIR__ . '/../app/database/Database.php';
-require_once __DIR__ . '/../app/class/categorie.php';
+require_once __DIR__ . '/../../app/database/Database.php';
+require_once __DIR__ . '/../../app/class/vehicule.php';
 
 // Initialize database connection
 $database = new Database();
 $db = $database->connect();
 
-// Initialize Category class
-$category = new Category($db);
+// Initialize Vehicule class
+$vehicule = new Vehicule($db);
 
-// Fetch all categories
-$categories = $category->getAllCategories();
+// Get reserved vehicle ID from URL
+$reservedVehicleId = isset($_GET['reserved_vehicle_id']) ? $_GET['reserved_vehicle_id'] : null;
+
+$reservedVehicle = null;
+if ($reservedVehicleId) {
+    // Fetch reserved vehicle details
+    $reservedVehicle = $vehicule->getVehicleById($reservedVehicleId);
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -21,7 +26,7 @@ $categories = $category->getAllCategories();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vroom</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="../../public/css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,16 +39,16 @@ $categories = $category->getAllCategories();
 
 <body>
     <!-- FIRST SECTION -->
-    <section class="landingPage h-[230px] flex flex-col items-center rounded-b-full">
+    <section class="landingPage h-[250px] flex flex-col items-center rounded-b-full">
         <div
             class="flex fixed z-40 rounded-b-xl w-[85%]  justify-around gap-24 items-center py-3  md:px-24 bg-white shadow-2xl">
-            <a href="./home.php"><img class="w-[120px]" src="./img/logo.png" alt="logo"></a>
+            <a href="../../Dashboard/index.php"><img class="w-[120px]" src="../../public/img/logo.png" alt="logo"></a>
             <div class="flex gap-12 items-center">
                 <a class=" bg-black text-white border-2 hover:bg-white hover:border-2 hover:text-black py-1 px-4 rounded-md transform duration-300"
-                    href="./home.php">Home</a>
-                <a href="./historique.php">Reservations</a>
-                <a href="./categories.php">Categories</a>
-                <a href="./categories.php">Services</a>
+                    href="../../Dashboard/index.php">Home</a>
+                <a href="historique.php">Reservations</a>
+                <a href="categories.php">Categories</a>
+                <a href="categories.php">Services</a>
             </div>
             <div>
                 <a href="#"
@@ -55,88 +60,126 @@ $categories = $category->getAllCategories();
         <div class=" bg-center gap-12 bg-cover   h-[100vh]  lg:pt-0 mt-24">
 
             <div class="mx-auto max-w-screen-sm text-center">
-                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">This is our cars
-                    categories</h2>
-                <p class="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-200">Explore our cars collection
-                    with category let's drive !</p>
-            </div>
-
-
-
+                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Your reservations</h2>
+                <p class="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-200">Explore the whole
+                    collection of open-source web components and elements built with the utility classes from
+                    Tailwind</p>
+            </div>  
 
         </div>
 
     </section>
 
-
-    <section class="bg-[url('./img/bagr.jpg')] bg-center bg-cover shadow-2xl">
-        <div class="max-w-2xl mx-auto">
-
-            <form>
-                <label for="default-search" class="mb-2 text-sm font-medium text-white">Search</label>
-                <div class="relative">
-                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-white dark:text-white" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    <input type="search" id="default-search"
-                        class="block p-4 pl-10 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-black focus:border-black dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-black dark:focus:border-black"
-                        placeholder="Search a car " required>
-                    <button type="submit"
-                        class="text-black absolute right-2.5 bottom-2.5 bg-white font-medium rounded-lg text-sm px-4 py-2 ">Search</button>
-                </div>
-            </form>
-            <div class="flex gap-4">
-                <div class="w-64 ">
-                    <label for="options" class="block text-gray-700 text-sm font-semibold mb-2"></label>
-                    <select id="options"
-                        class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['id_categorie']; ?>"><?php echo $category['nom']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-
-
-            </div>
-
-
-        </div>
-        <div class="flex flex-wrap gap-12 px-4 justify-center py-12">
-            <?php foreach ($categories as $category): ?>
-                <div class="relative group w-[500px] shadow-2xl h-[300px] bg-cover bg-center rounded-lg hover:scale-90 duration-300 hover:cursor-pointer"
-                    style="background-image: url('<?php echo $category['categorie_img']; ?>');">
-                    <div
-                        class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    <?php if ($reservedVehicle): ?>
+        <section>
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold">Reserved Vehicle</h2>
+                <div class="relative group w-[calc(50%-1.5rem)] shadow-2xl h-[300px] bg-cover bg-center rounded-lg"
+                    style="background-image: url('<?php echo $reservedVehicle['vehicule_image']; ?>');">
+                    <div class="absolute inset-0 rounded-lg bg-black bg-opacity-50 text-white flex transition-opacity duration-300">
                         <div class="p-8">
-                            <h3 class="text-2xl font-semibold"><?php echo $category['nom']; ?></h3>
-                            <p class="mt-2 font-light"><?php echo $category['description']; ?></p>                 
-                            <a href=" vihicules.php?category_id=<?php echo $category['id_categorie']; ?>" class="text-green-500">Show Vehicles</a>
+                            <h3 class="text-2xl font-semibold"><?php echo $reservedVehicle['nom_vehicule']; ?></h3>
+                            <p class="mt-2 font-light"><?php echo $reservedVehicle['description']; ?></p>
+                            <ul class="pb-4 text-sm">
+                                <li><strong>Fuel Economy:</strong> <?php echo $reservedVehicle['fuel_economy']; ?></li>
+                                <li><strong>Price:</strong> <?php echo $reservedVehicle['price']; ?></li>
+                                <li><strong>Features:</strong> <?php echo $reservedVehicle['features']; ?></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <section>
+        <section class="bg-white ">
+            <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
+
+                <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
+
+
+                    <div class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-black dark:border-gray-700">
+                        <a href="#">
+                            <img class="w-[400px] rounded-r-lg sm:rounded-none " src="../../public/img/mer.jpg"
+                                alt="Bonnie Avatar">
+                        </a>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <a href="#">Bonnie Green</a>
+                            </h3>
+                            <span class="text-gray-500 dark:text-gray-400">CEO & Web Developer</span>
+                            <p class="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">Bonnie drives the technical
+                                strategy of the flowbite platform and brand.</p>
+
+                                <a href="#"><i class="ri-edit-box-fill text-white hover:text-gray-200"></i></a>
+
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-black dark:border-gray-700">
+                        <a href="#">
+                            <img class="w-[400px] rounded-r-lg sm:rounded-none " src="../../public/img/mer.jpg"
+                                alt="Bonnie Avatar">
+                        </a>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <a href="#">Bonnie Green</a>
+                            </h3>
+                            <span class="text-gray-500 dark:text-gray-400">CEO & Web Developer</span>
+                            <p class="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">Bonnie drives the technical
+                                strategy of the flowbite platform and brand.</p>
+                            <a href="#"><i class="ri-edit-box-fill text-white hover:text-gray-200"></i></a>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-black dark:border-gray-700">
+                        <a href="#">
+                            <img class="w-[400px] rounded-r-lg sm:rounded-none " src="../../public/img/mer.jpg"
+                                alt="Bonnie Avatar">
+                        </a>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <a href="#">Bonnie Green</a>
+                            </h3>
+                            <span class="text-gray-500 dark:text-gray-400">CEO & Web Developer</span>
+                            <p class="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">Bonnie drives the technical
+                                strategy of the flowbite platform and brand.</p>
+                                <a href="#"><i class="ri-edit-box-fill text-white hover:text-gray-200"></i></a>
+
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-black dark:border-gray-700">
+                        <a href="#">
+                            <img class="w-[400px] rounded-r-lg sm:rounded-none " src="../../public/img/mer.jpg"
+                                alt="Bonnie Avatar">
+                        </a>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white"></h3>
+                                <a href="#">Bonnie Green</a>
+                            </h3>
+                            <span class="text-gray-500 dark:text-gray-400">CEO & Web Developer</span>
+                            <p class="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">Bonnie drives the technical
+                                strategy of the flowbite platform and brand.</p>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
     </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <section class="bg-white">
@@ -211,16 +254,5 @@ $categories = $category->getAllCategories();
     </div>
 </section>
 
-
-
-
-
-
-
-
-
-
-
 </body>
-
 </html>
